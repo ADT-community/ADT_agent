@@ -1,0 +1,45 @@
+name: Find improvements
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"   # every Monday, 06:17 UTC
+  workflow_dispatch:
+    inputs:
+      project:
+        description: "Only this project name from projects.json (blank = all)"
+        required: false
+        default: ""
+      dry_run:
+        description: "Dry run: show proposals without opening issues"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: adt-agent-improve
+  cancel-in-progress: false
+
+jobs:
+  improve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Run the agent
+        env:
+          ADT_GITHUB_TOKEN: ${{ secrets.ADT_GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ADT_MODEL: ${{ vars.ADT_MODEL }}
+          INPUT_PROJECT: ${{ inputs.project }}
+          INPUT_DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          args=(improve)
+          if [ -n "$INPUT_PROJECT" ]; then args+=(--project "$INPUT_PROJECT"); fi
+          if [ "$INPUT_DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+          python -m agent "${args[@]}"

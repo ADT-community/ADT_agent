@@ -1,0 +1,26 @@
+{
+  "max_new": 3,
+  "projects": [
+    {
+      "name": "Minibus app",
+      "repo": "ADT-community/trans_sport",
+      "focus": "Owner dashboard and driver app come first: owners pay, and drivers' GPS feeds everything else. Then the passenger app. Mobile money fares. Must work on low-cost Android phones."
+    },
+    {
+      "name": "Local-language AI",
+      "repo": "ADT-community/locallity_ai",
+      "focus": "Voice-first assistant that hears and speaks African languages. The web app in web/ is built; next is the core API (apiUrl), our own speech models (sttUrl, ttsUrl), and new channels such as WhatsApp, SMS, USSD and voice calls, each as a feature on top of the same core. Farmers and everyday users."
+    },
+    {
+      "name": "Creator social app",
+      "repo": "ADT-community/content_feed",
+      "focus": "Short video and posts that pay African creators through tips, gifts, shopping and brand deals, paid out by mobile money. Keep video costs low. Moderation from day one."
+    },
+    {
+      "name": "ADT agent",
+      "repo": "ADT-community/ADT_agent",
+      "focus": "The agent itself: better proposals, a daily network status report, a status page on the ADT website, and payout tracking.",
+      "enabled": true
+    }
+  ]
+}
