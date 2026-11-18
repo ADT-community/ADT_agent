@@ -79,3 +79,9 @@ Powers ADT first. Once it works, sell it to other open source and remote teams t
 ## Contribute
 
 See the [website](https://adt-community.github.io) for how bounties and goals work, then pick an open issue in this repo.
+
+## License
+
+[GNU AGPL-3.0](LICENSE). You can use, study, change and share this code. If you run a modified version as a service for others, you must publish your changes under the same license.
+
+By contributing, you agree your contributions are licensed under the same terms.
