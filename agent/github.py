@@ -78,7 +78,20 @@ class GitHub:
                 break
         return out
 
+    def pulls(self, full: str) -> list[dict]:
+        """Open and recently closed pull requests."""
+        return self._req("GET", f"/repos/{full}/pulls", params={"state": "all", "per_page": 100}).json()
+
+    def issue_comments(self, full: str, number: int) -> list[dict]:
+        return self._req("GET", f"/repos/{full}/issues/{number}/comments", params={"per_page": 100}).json()
+
+    def issue_events(self, full: str, number: int) -> list[dict]:
+        return self._req("GET", f"/repos/{full}/issues/{number}/events", params={"per_page": 100}).json()
+
     # ---- writing ----
+    def comment(self, full: str, number: int, body: str) -> dict:
+        return self._req("POST", f"/repos/{full}/issues/{number}/comments", json={"body": body}).json()
+
     def ensure_label(self, full: str, name: str, color: str, description: str = "") -> None:
         self._req("POST", f"/repos/{full}/labels", ok=(201, 422),
                   json={"name": name, "color": color, "description": description})

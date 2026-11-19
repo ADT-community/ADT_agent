@@ -29,6 +29,16 @@ projects.json ──▶ read repo ──▶ Claude: what next? ──▶ drop du
 
 **It won't flood a repo.** At most 3 new proposals per project per run, and none when 10 are already waiting for review (`--max-open`).
 
+## Bounty housekeeping (daily)
+
+Every day at 07:43 UTC, `python -m agent bounties`:
+
+- posts **claim instructions** once on every issue with a `bounty:$` label
+- checks **claimed tasks**: no word from the assignee for 5 days gets one polite check-in comment
+- writes the **network report**: paid tasks open (and their total), claimed, in review, stalled and next-wave tasks per repo, shown in the Actions run summary
+
+Repos covered: every project in `projects.json` plus `bounty_repos`. Run `python -m agent bounties --dry-run` to see the report without posting anything. Uses the same `ADT_GITHUB_TOKEN` secret as the improvement pipeline.
+
 ## One-time setup
 
 In this repo's **Settings → Secrets and variables → Actions**, add two secrets:
@@ -70,10 +80,10 @@ Powers ADT first. Once it works, sell it to other open source and remote teams t
 ## Starter tasks (bounty candidates)
 
 - [x] Improvement pipeline with weekly GitHub Actions schedule
-- [ ] Detect stalled tasks (claimed, no activity for 7 days) and comment on them
-- [ ] Daily report of open bounties across all repos
+- [x] Detect stalled tasks (claimed, no activity for 5 days) and comment on them
+- [x] Daily report of open bounties across all repos
 - [ ] Write `status.json` to the website repo, and a status page that reads it
-- [ ] When a maintainer approves a proposal, post a "how to claim this bounty" comment
+- [x] When a maintainer approves a proposal, post a "how to claim this bounty" comment
 - [ ] Payout tracking: list merged PRs that closed bounty issues, per contributor
 
 ## Contribute

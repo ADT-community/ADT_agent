@@ -11,6 +11,7 @@ import os
 import sys
 from pathlib import Path
 
+from .bounties import process_repo, report_md
 from .github import GitHub, GitHubError
 from .improve import Project, run_project
 from .llm import LLMError
@@ -45,6 +46,29 @@ def summary_md(results: list[dict], dry_run: bool) -> str:
     return "\n".join(lines)
 
 
+def bounty_repos(path: Path) -> list[str]:
+    data = json.loads(path.read_text())
+    repos = [p["repo"] for p in data["projects"]] + data.get("bounty_repos", [])
+    return list(dict.fromkeys(repos))
+
+
+def run_bounties(gh: GitHub, config: Path, dry_run: bool) -> int:
+    statuses, failed = [], 0
+    for repo in bounty_repos(config):
+        print(f"→ {repo}", file=sys.stderr)
+        try:
+            statuses.append(process_repo(gh, repo, dry_run=dry_run))
+        except GitHubError as e:
+            failed += 1
+            print(f"⚠️ {repo}: {e}", file=sys.stderr)
+    md = report_md(statuses)
+    print(md)
+    if os.environ.get("GITHUB_STEP_SUMMARY"):
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
+            f.write(md + "\n")
+    return 1 if failed and not statuses else 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="agent")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -54,12 +78,18 @@ def main(argv: list[str] | None = None) -> int:
     imp.add_argument("--config", default=str(ROOT / "projects.json"))
     imp.add_argument("--max-open", type=int, default=int(os.environ.get("ADT_MAX_OPEN", 10)),
                      help="Skip a project when this many proposals are already waiting")
+    bo = sub.add_parser("bounties", help="Claim instructions, stalled-task check-ins and the daily report")
+    bo.add_argument("--dry-run", action="store_true", help="Report only, post no comments")
+    bo.add_argument("--config", default=str(ROOT / "projects.json"))
     args = ap.parse_args(argv)
 
     token = os.environ.get("ADT_GITHUB_TOKEN") or os.environ.get("GITHUB_TOKEN")
     if not token:
         print("ADT_GITHUB_TOKEN is not set", file=sys.stderr)
         return 2
+
+    if args.cmd == "bounties":
+        return run_bounties(GitHub(token), Path(args.config), args.dry_run)
 
     projects = load_projects(Path(args.config))
     if args.project:

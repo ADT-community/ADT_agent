@@ -1,0 +1,33 @@
+name: Bounty housekeeping
+
+on:
+  schedule:
+    - cron: "43 7 * * *"   # every day, 07:43 UTC
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: report only, post no comments"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: adt-agent-bounties
+  cancel-in-progress: false
+
+jobs:
+  bounties:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Claim instructions, stalled check-ins, daily report
+        env:
+          ADT_GITHUB_TOKEN: ${{ secrets.ADT_GITHUB_TOKEN }}
+        run: python -m agent bounties ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }}

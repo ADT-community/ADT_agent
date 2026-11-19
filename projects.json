@@ -22,5 +22,9 @@
       "focus": "The agent itself: better proposals, a daily network status report, a status page on the ADT website, and payout tracking.",
       "enabled": true
     }
+  ],
+  "bounty_repos": [
+    "ADT-community/trader",
+    "ADT-community/adt-community.github.io"
   ]
 }
