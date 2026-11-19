@@ -1,0 +1,31 @@
+name: Post claim rules
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  issues: write
+
+jobs:
+  post-claim:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.label.name, 'bounty:')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Post claim comment
+        env:
+          ADT_GITHUB_TOKEN: ${{ secrets.ADT_GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python -c "
+          from agent.github import GitHub
+          from agent.claim import post_claim_comment
+          gh = GitHub()
+          post_claim_comment(gh, '$REPO', $ISSUE_NUMBER)
+          "
