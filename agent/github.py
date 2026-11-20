@@ -86,3 +86,11 @@ class GitHub:
     def create_issue(self, full: str, title: str, body: str, labels: list[str]) -> dict:
         return self._req("POST", f"/repos/{full}/issues",
                          json={"title": title, "body": body, "labels": labels}).json()
+
+    def issue_comments(self, full: str, number: int) -> list[dict]:
+        return self._req("GET", f"/repos/{full}/issues/{number}/comments",
+                         params={"per_page": 100}).json()
+
+    def create_comment(self, full: str, number: int, body: str) -> dict:
+        return self._req("POST", f"/repos/{full}/issues/{number}/comments",
+                         json={"body": body}).json()

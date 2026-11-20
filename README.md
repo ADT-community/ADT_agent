@@ -29,6 +29,16 @@ projects.json ──▶ read repo ──▶ Claude: what next? ──▶ drop du
 
 **It won't flood a repo.** At most 3 new proposals per project per run, and none when 10 are already waiting for review (`--max-open`).
 
+## Stalled bounty check
+
+Claimed tasks that go quiet block other contributors. The agent checks the repos in `projects.json` for **open** issues that have a `bounty:$…` label and an **assignee**, then looks at the last activity:
+
+- no activity for **5 days** (`--days` changes this) → the task is stalled;
+- the agent leaves **one** polite comment asking the assignee for an update;
+- a hidden marker in that comment means the agent **never comments twice** on the same issue, even on later runs.
+
+The check never unassigns or closes anything — a maintainer stays in charge. Use `--dry-run` to see the comments without posting them.
+
 ## One-time setup
 
 In this repo's **Settings → Secrets and variables → Actions**, add two secrets:
@@ -51,6 +61,8 @@ pip install -r requirements.txt
 export ADT_GITHUB_TOKEN=...  ANTHROPIC_API_KEY=...
 python -m agent improve --dry-run                       # all projects, no issues opened
 python -m agent improve --project "Minibus app"         # one project, opens issues
+python -m agent stalled --dry-run                       # show stalled tasks, post nothing
+python -m agent stalled --days 5                        # ask for an update once per stalled task
 python -m unittest discover tests                       # tests (no keys needed)
 ```
 
@@ -70,7 +82,7 @@ Powers ADT first. Once it works, sell it to other open source and remote teams t
 ## Starter tasks (bounty candidates)
 
 - [x] Improvement pipeline with weekly GitHub Actions schedule
-- [ ] Detect stalled tasks (claimed, no activity for 7 days) and comment on them
+- [x] Detect stalled tasks (claimed, no activity for 5 days) and comment on them
 - [ ] Daily report of open bounties across all repos
 - [ ] Write `status.json` to the website repo, and a status page that reads it
 - [ ] When a maintainer approves a proposal, post a "how to claim this bounty" comment

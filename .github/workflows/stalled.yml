@@ -1,0 +1,44 @@
+name: Check stalled bounties
+
+on:
+  schedule:
+    - cron: "23 6 * * *"   # every day, 06:23 UTC
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: show comments without posting them"
+        type: boolean
+        default: true
+      days:
+        description: "Days without activity before a task is stalled"
+        required: false
+        default: "5"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: adt-agent-stalled
+  cancel-in-progress: false
+
+jobs:
+  stalled:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Run the stalled check
+        env:
+          ADT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_DRY_RUN: ${{ inputs.dry_run }}
+          INPUT_DAYS: ${{ inputs.days }}
+        run: |
+          args=(stalled)
+          if [ -n "$INPUT_DAYS" ]; then args+=(--days "$INPUT_DAYS"); fi
+          if [ "$INPUT_DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+          python -m agent "${args[@]}"
