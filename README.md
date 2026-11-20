@@ -25,19 +25,18 @@ projects.json ──▶ read repo ──▶ Claude: what next? ──▶ drop du
                                      contributor claims it, builds it, gets paid
 ```
 
-**A human stays in charge of money.** Proposals are not bounties. A maintainer approves one by adding a `bounty:$…` label and removing `agent-proposal`, or closes it.
+**A human stays in charge of money.** Proposals are not bounties. A maintainer approves one by adding it to ADT Work (`tasks.json` on the website) and removing `agent-proposal`, or closes it.
 
 **It won't flood a repo.** At most 3 new proposals per project per run, and none when 10 are already waiting for review (`--max-open`).
 
-## Bounty housekeeping (daily)
+## Network report (daily)
 
-Every day at 07:43 UTC, `python -m agent bounties`:
+Every day at 07:43 UTC, `python -m agent report` builds a read-only report in the Actions run summary:
 
-- posts **claim instructions** once on every issue with a `bounty:$` label
-- checks **claimed tasks**: no word from the assignee for 5 days gets one polite check-in comment
-- writes the **network report**: paid tasks open (and their total), claimed, in review, stalled and next-wave tasks per repo, shown in the Actions run summary
+- paid tasks open and their total in dollars, next-wave tasks, taken and done, per project, read from the website's [`tasks.json`](https://github.com/ADT-community/adt-community.github.io/blob/main/tasks.json)
+- open pull requests per repo and who opened them
 
-Repos covered: every project in `projects.json` plus `bounty_repos`. Run `python -m agent bounties --dry-run` to see the report without posting anything. Uses the same `ADT_GITHUB_TOKEN` secret as the improvement pipeline.
+Tasks are listed, claimed and paid on [ADT Work](https://adt-community.github.io/work.html), not on GitHub, so the agent never posts claim or payment comments. Uses the `ADT_GITHUB_TOKEN` secret (needed to read private repos).
 
 ## One-time setup
 
@@ -73,22 +72,20 @@ Powers ADT first. Once it works, sell it to other open source and remote teams t
 | Goal | Done when |
 |---|---|
 | **G1: Improvement pipeline** ✅ | Finds next improvements per project and opens them as proposals every week |
-| **G2: Daily report** | Daily summary of open bounties, stalled tasks and proposals waiting for review |
+| **G2: Daily report** | Daily summary of open ADT Work tasks and pull requests |
 | **G3: Status page** | Live network status on the ADT website (`status.json` in the website repo) |
-| **G4: Payout tracking** | Tracks merged bounties and what's owed to whom |
+| **G4: Payout tracking** | Tracks approved ADT Work deliveries and what's owed to whom |
 
 ## Starter tasks (bounty candidates)
 
 - [x] Improvement pipeline with weekly GitHub Actions schedule
-- [x] Detect stalled tasks (claimed, no activity for 5 days) and comment on them
-- [x] Daily report of open bounties across all repos
+- [x] Daily network report of open tasks (from ADT Work) and pull requests
 - [ ] Write `status.json` to the website repo, and a status page that reads it
-- [x] When a maintainer approves a proposal, post a "how to claim this bounty" comment
 - [ ] Payout tracking: list merged PRs that closed bounty issues, per contributor
 
 ## Contribute
 
-See the [website](https://adt-community.github.io) for how bounties and goals work, then pick an open issue in this repo.
+Paid tasks are listed, claimed and paid on [ADT Work](https://adt-community.github.io/work.html), open to people living in Africa.
 
 ## License
 

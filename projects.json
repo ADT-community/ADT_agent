@@ -23,7 +23,7 @@
       "enabled": true
     }
   ],
-  "bounty_repos": [
+  "report_repos": [
     "ADT-community/trader",
     "ADT-community/adt-community.github.io"
   ]
