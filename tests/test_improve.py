@@ -73,7 +73,8 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(self.gh.created[0]["labels"], [PROPOSAL_LABEL])
         self.assertIn(PROPOSAL_LABEL, self.gh.labels)
         self.assertIn("WhatsApp", self.gh.created[0]["title"])
-        self.assertIn("$200", self.gh.created[0]["body"])
+        self.assertNotIn("$", self.gh.created[0]["body"])  # pay is shown only on ADT Work
+        self.assertIn("ADT Work", self.gh.created[0]["body"])
         self.assertIn("- [ ] Voice notes get spoken replies", self.gh.created[0]["body"])
         self.assertTrue(r["created"][0]["url"].endswith("/issues/1"))
 

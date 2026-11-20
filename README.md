@@ -6,7 +6,7 @@ Part of the [ADT community](https://adt-community.github.io).
 
 ## The problem
 
-As the number of projects grows, someone has to work out what each app needs next, turn that into tasks, keep track of bounties and notice stalled work. That doesn't scale by hand.
+As the number of projects grows, someone has to work out what each app needs next, turn that into tasks, keep track of tasks and notice stalled work. That doesn't scale by hand.
 
 ## What it does today: the improvement pipeline
 
@@ -15,17 +15,17 @@ Every Monday, on its own, the agent:
 1. **Reads each project** listed in [`projects.json`](projects.json): README, key code files, file list, recent commits and every existing issue.
 2. **Works out what would help most next**, using Claude: missing features (for example *"add a WhatsApp channel"*), bugs, tests, security, docs, with African realities in mind (low-cost phones, data costs, mobile money, local languages) and each project's current goal.
 3. **Skips duplicates** of anything already in the project's issues.
-4. **Opens each idea as a GitHub issue** labelled `agent-proposal`, with why, what to build, acceptance criteria, size and a suggested bounty.
+4. **Opens each idea as a GitHub issue** labelled `agent-proposal`, with why, what to build, acceptance criteria, and size.
 
 ```
 projects.json ──▶ read repo ──▶ Claude: what next? ──▶ drop duplicates ──▶ open "agent-proposal" issues
                                                                                     │
-                                     maintainer adds bounty:$… label ◀──────────────┘
+                                     maintainer adds it to ADT Work  ◀──────────────┘
                                                     │
                                      contributor claims it, builds it, gets paid
 ```
 
-**A human stays in charge of money.** Proposals are not bounties. A maintainer approves one by adding it to ADT Work (`tasks.json` on the website) and removing `agent-proposal`, or closes it.
+**A human stays in charge of money.** Proposals are not paid tasks. A maintainer approves one by adding it to ADT Work (`tasks.json` on the website) and removing `agent-proposal`, or closes it.
 
 **It won't flood a repo.** At most 3 new proposals per project per run, and none when 10 are already waiting for review (`--max-open`).
 
@@ -76,12 +76,12 @@ Powers ADT first. Once it works, sell it to other open source and remote teams t
 | **G3: Status page** | Live network status on the ADT website (`status.json` in the website repo) |
 | **G4: Payout tracking** | Tracks approved ADT Work deliveries and what's owed to whom |
 
-## Starter tasks (bounty candidates)
+## Starter tasks
 
 - [x] Improvement pipeline with weekly GitHub Actions schedule
 - [x] Daily network report of open tasks (from ADT Work) and pull requests
 - [ ] Write `status.json` to the website repo, and a status page that reads it
-- [ ] Payout tracking: list merged PRs that closed bounty issues, per contributor
+- [ ] Payout tracking: list approved ADT Work deliveries, per contributor
 
 ## Contribute
 
