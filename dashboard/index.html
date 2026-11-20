@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#11181c">
+<title>ADT Fleet</title>
+<style>
+  :root { --bg: #f5f6f4; --card: #fff; --ink: #11181c; --muted: #5d6a66; --line: #e2e6e3; --brand: #0b6e4f;
+          --ok: #0a7d3e; --warn: #b26a00; --bad: #c62828; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { position: sticky; top: 0; z-index: 3; background: var(--ink); color: #fff; padding: 14px 16px; }
+  header h1 { margin: 0; font-size: 19px; }
+  header p { margin: 2px 0 0; font-size: 13px; opacity: .75; }
+  main { padding: 14px 16px 40px; max-width: 680px; margin: 0 auto; }
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+  .stat b { display: block; font-size: 24px; line-height: 1.1; }
+  .stat span { font-size: 13px; color: var(--muted); }
+  .app { background: var(--card); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 12px; overflow: hidden; }
+  .app > summary { list-style: none; cursor: pointer; padding: 14px 16px; }
+  .app > summary::-webkit-details-marker { display: none; }
+  .head { display: flex; align-items: center; gap: 10px; }
+  .head h2 { margin: 0; font-size: 17px; flex: 1; }
+  .pill { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #eef1ef; color: var(--muted); white-space: nowrap; }
+  .pill.live { background: #e3f4ea; color: var(--ok); } .pill.practice { background: #fff4d6; color: #6b4b00; }
+  .what { color: var(--muted); font-size: 14px; margin: 4px 0 8px; }
+  .bar { height: 8px; background: #eef1ef; border-radius: 999px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--brand); border-radius: 999px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .ok { color: var(--ok); } .warn { color: var(--warn); } .bad { color: var(--bad); }
+  .body { padding: 0 16px 14px; border-top: 1px solid var(--line); }
+  h3 { font-size: 14px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 14px 0 6px; }
+  ul.check { list-style: none; padding: 0; margin: 0; }
+  ul.check li { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  ul.check li:last-child { border-bottom: 0; }
+  ul.check .box { flex: none; width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--line); display: grid; place-items: center; font-size: 13px; font-weight: 800; }
+  ul.check li.done .box { background: var(--ok); border-color: var(--ok); color: #fff; }
+  ul.check li.done span.t { color: var(--muted); text-decoration: line-through; }
+  ul.check li.auto .box { border-style: dashed; }
+  ul.check small { display: block; color: var(--muted); font-size: 12px; }
+  .money { font-weight: 700; color: var(--gold, #c98a00); }
+  .links { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .btn { flex: 1; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; padding: 0 14px; border-radius: 10px;
+         border: 1px solid var(--brand); color: var(--brand); text-decoration: none; font-weight: 700; font-size: 14px; }
+  .btn.solid { background: var(--brand); color: #fff; }
+  .note { font-size: 13px; color: var(--muted); }
+  .section { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 4px 16px 12px; margin: 16px 0; }
+  .pr { font-size: 14px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .pr:last-child { border-bottom: 0; }
+  .pr a { color: var(--ink); text-decoration: none; font-weight: 600; }
+</style>
+</head>
+<body>
+<header><h1>ADT Fleet</h1><p id="sub">Every ADT app, its checklist and what needs you.</p></header>
+<main>
+  <div class="stats" id="stats"></div>
+  <div class="section" id="attention"><h3>Needs you now</h3><p class="note">Loading…</p></div>
+  <div id="apps"></div>
+  <div class="section" id="network"></div>
+  <p class="note">Ticks with a solid box come from <a href="https://github.com/ADT-community/ADT_agent/blob/main/dashboard/fleet.json">fleet.json</a>
+    (<a href="https://github.com/ADT-community/ADT_agent/edit/main/dashboard/fleet.json">edit it</a> to tick items). Dashed boxes are checked live from GitHub and ADT Work.
+    Live data refreshes every 10 minutes.</p>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

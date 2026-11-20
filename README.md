@@ -4,6 +4,17 @@ An AI agent that helps run the whole ADT network of projects.
 
 Part of the [ADT community](https://adt-community.github.io).
 
+## Fleet dashboard
+
+**[adt-community.github.io/ADT_agent](https://adt-community.github.io/ADT_agent/)**: one mobile page that manages every ADT app.
+
+- **Top line:** revenue this month, products earning, paid tasks open on ADT Work, pull requests waiting, and days left to the kill-rule deadline (6 July 2027).
+- **Needs you now:** private repos, apps not yet published, failing checks, pull requests piling up, the kill-rule warning, and the 1-in-10 social-good rule.
+- **Every app:** stage, monthly revenue, checklist progress, its pull requests, and links to the live app, the code and its tasks.
+- **Checklists:** maintainers tick items in [`dashboard/fleet.json`](dashboard/fleet.json) (solid boxes). Some items are checked live from GitHub and ADT Work (dashed boxes): repo public, published on Pages, automatic checks passing, tasks done.
+
+No keys needed: it reads public GitHub data and the website's `tasks.json`. Deployed by `.github/workflows/dashboard.yml` once GitHub Pages is on (Settings → Pages → Source: GitHub Actions).
+
 ## The problem
 
 As the number of projects grows, someone has to work out what each app needs next, turn that into tasks, keep track of bounties and notice stalled work. That doesn't scale by hand.
