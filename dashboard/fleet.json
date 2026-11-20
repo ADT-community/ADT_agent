@@ -1,0 +1,138 @@
+{
+  "updated": "2026-11-20",
+  "kill_rule": {
+    "deadline": "2027-07-06",
+    "warning": "2027-04-06",
+    "rule": "No paying customer or signed paid pilot by the deadline: the project is paused and its paid tasks move to projects that earn."
+  },
+  "apps": [
+    {
+      "id": "work",
+      "name": "ADT Work",
+      "what": "Paid tasks for people living in Africa; companies post work, contributors deliver.",
+      "repo": "adt-community.github.io",
+      "live": "https://adt-community.github.io/work.html",
+      "stage": "Live",
+      "revenue_monthly_usd": 0,
+      "social_good": false,
+      "checklist": [
+        { "text": "Task board live, grouped by project", "done": true },
+        { "text": "Task pages, claim and deliver forms live", "done": true },
+        { "text": "African phone number required to claim", "done": true },
+        { "text": "Partner sign-up page live", "done": true },
+        { "text": "Form endpoint connected so claims reach us", "done": false },
+        { "text": "Real accounts and sign-in (Supabase backend)", "done": false },
+        { "text": "Payout platform chosen for weekly payouts", "done": false },
+        { "text": "Partner pricing set (fee per task)", "done": false },
+        { "text": "First paying partner company", "done": false, "revenue": true }
+      ]
+    },
+    {
+      "id": "invest",
+      "name": "ADT Invest",
+      "what": "Buy Ghana and US shares from ₵20 with mobile money.",
+      "repo": "trader",
+      "live": "https://adt-community.github.io/invest/",
+      "stage": "Practice",
+      "revenue_monthly_usd": 0,
+      "social_good": false,
+      "checklist": [
+        { "text": "Practice app live on mobile", "done": true },
+        { "text": "Research: partners, rules, competitors", "done": true },
+        { "text": "Brokerage core with tests", "done": true },
+        { "text": "Repo public for contributors", "done": false },
+        { "text": "Waitlist form connected", "done": false },
+        { "text": "Live GSE and US price feed", "done": false },
+        { "text": "Lessons in Twi (native speaker)", "done": false },
+        { "text": "Ghanaian securities lawyer engaged", "done": false },
+        { "text": "Licensed broker partner signed", "done": false },
+        { "text": "Platform registered with SEC Ghana (via partner)", "done": false },
+        { "text": "First real customer trade", "done": false, "revenue": true }
+      ]
+    },
+    {
+      "id": "minibus",
+      "name": "Minibus app",
+      "what": "Live minibus tracking and earnings for owners, drivers and passengers.",
+      "repo": "trans_sport",
+      "live": "https://adt-community.github.io/trans_sport/",
+      "stage": "Building",
+      "revenue_monthly_usd": 0,
+      "social_good": false,
+      "checklist": [
+        { "text": "Demo web app in the repo", "done": true },
+        { "text": "GitHub Pages on, so the app is live", "done": false },
+        { "text": "Pilot city chosen and owners interviewed", "done": false },
+        { "text": "Driver and owner app designs", "done": false },
+        { "text": "Backend v1: pings, fares, earnings", "done": false },
+        { "text": "Live GPS on the owner map", "done": false },
+        { "text": "Price per vehicle set and sales kit ready", "done": false },
+        { "text": "First paying owner group", "done": false, "revenue": true }
+      ]
+    },
+    {
+      "id": "ai",
+      "name": "Local-language AI",
+      "what": "Voice assistant in African languages; paid API for businesses.",
+      "repo": "locallity_ai",
+      "live": "https://adt-community.github.io/locallity_ai/",
+      "stage": "Building",
+      "revenue_monthly_usd": 0,
+      "social_good": true,
+      "checklist": [
+        { "text": "Demo web app in the repo", "done": true },
+        { "text": "GitHub Pages on, so the app is live", "done": false },
+        { "text": "First language chosen", "done": false },
+        { "text": "Core API with safety prompt", "done": false },
+        { "text": "Knowledge base with cited answers", "done": false },
+        { "text": "Business API with keys and pricing", "done": false },
+        { "text": "First paying business customer", "done": false, "revenue": true }
+      ]
+    },
+    {
+      "id": "creator",
+      "name": "Creator app",
+      "what": "Short-video app where African creators earn tips by mobile money.",
+      "repo": "content_feed",
+      "live": "https://adt-community.github.io/content_feed/",
+      "stage": "Slow lane",
+      "revenue_monthly_usd": 0,
+      "social_good": false,
+      "checklist": [
+        { "text": "Demo web app in the repo", "done": true },
+        { "text": "GitHub Pages on, so the app is live", "done": false },
+        { "text": "Launch country, niche and video costs decided", "done": false },
+        { "text": "Backend v1: accounts, profiles, follows", "done": false },
+        { "text": "Video upload and playback", "done": false },
+        { "text": "Tips by mobile money (sandbox)", "done": false },
+        { "text": "First creator paid out", "done": false, "revenue": true }
+      ]
+    },
+    {
+      "id": "agent",
+      "name": "ADT agent",
+      "what": "Runs the network: proposals, reports and this dashboard.",
+      "repo": "ADT_agent",
+      "live": "https://adt-community.github.io/ADT_agent/",
+      "stage": "Internal",
+      "internal": true,
+      "revenue_monthly_usd": 0,
+      "social_good": false,
+      "checklist": [
+        { "text": "Weekly improvement proposals pipeline", "done": true },
+        { "text": "Fleet dashboard", "done": true },
+        { "text": "Secrets added (ANTHROPIC_API_KEY, ADT_GITHUB_TOKEN)", "done": false },
+        { "text": "Daily network report merged (PR #14)", "done": false },
+        { "text": "GitHub Pages on, so this dashboard is live", "done": false },
+        { "text": "Payout ledger for weekly payouts", "done": false }
+      ]
+    }
+  ],
+  "network": [
+    { "text": "Kill rule and profit-first rules published", "done": false },
+    { "text": "Company or legal entity for ADT", "done": false },
+    { "text": "Payout platform and first payout run (6 Jan 2027)", "done": false },
+    { "text": "Launch posts and community list ready", "done": false },
+    { "text": "Discord server live", "done": false }
+  ]
+}
