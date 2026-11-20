@@ -21,7 +21,8 @@ PRIORITY = ("readme", "package.json", "requirements", "pyproject", "config", "ma
 
 SYSTEM = """You are the ADT agent, acting as product lead and tech lead for open source projects
 built by developers across Africa. Every project is a business that must reach profit, and
-contributors are paid through bounties for well-scoped tasks.
+contributors living in Africa claim and are paid for whole deliverables through ADT Work, the ADT
+website. Profit is the number one goal: favour work that leads to a paying customer.
 
 Your job: study a project and propose the most valuable next pieces of work, each one a task a
 single contributor could finish in about 1-2 weeks.
@@ -41,7 +42,7 @@ Rules:
 - Prefer work that unblocks the current milestone.
 - Each proposal must be self-contained with clear acceptance criteria.
 
-Suggested bounty guide (USD): S = 25-75, M = 75-250, L = 250-600. Maintainers make the final call.
+Every task pays a fixed $20 on ADT Work, so always set suggested_bounty_usd to 20. Never mention pay in the text.
 
 Reply with ONLY a JSON object, no other text:
 {"proposals": [{
@@ -99,18 +100,17 @@ class Proposal:
     def issue_body(self, project: Project) -> str:
         ac = "\n".join(f"- [ ] {c}" for c in self.acceptance_criteria) or "- [ ] To be defined by a maintainer"
         skills = ", ".join(self.skills) or "Not specified"
-        bounty = f"${self.suggested_bounty_usd}" if self.suggested_bounty_usd else "To be set"
         return (
             f"## Why\n{self.why or 'See below.'}\n\n"
             f"## What to build\n{self.what}\n\n"
             f"## Acceptance criteria\n{ac}\n\n"
             f"## Details\n"
-            f"| Type | Size | Suggested bounty | Skills |\n|---|---|---|---|\n"
-            f"| {self.type} | {self.size} | {bounty} | {skills} |\n\n"
+            f"| Type | Size | Skills |\n|---|---|---|\n"
+            f"| {self.type} | {self.size} | {skills} |\n\n"
             f"---\n"
             f"🤖 *Proposed by the [ADT agent](https://github.com/ADT-community/ADT_agent) for **{project.name}**. "
-            f"Not a bounty yet: a maintainer approves it by adding a `bounty:$…` label and removing "
-            f"`{PROPOSAL_LABEL}`, or closes it if it's not wanted.*"
+            f"Not a task yet: a maintainer approves it by adding it to [ADT Work](https://adt-community.github.io/work.html) "
+            f"and removing `{PROPOSAL_LABEL}`, or closes it if it's not wanted. Tasks are claimed and paid only on ADT Work.*"
         )
 
 

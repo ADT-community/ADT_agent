@@ -11,6 +11,7 @@ import os
 import sys
 from pathlib import Path
 
+from .network import load_tasks, open_prs, report_md, task_summary
 from .github import GitHub, GitHubError
 from .improve import Project, run_project
 from .llm import LLMError
@@ -45,6 +46,32 @@ def summary_md(results: list[dict], dry_run: bool) -> str:
     return "\n".join(lines)
 
 
+def report_repos(path: Path) -> list[str]:
+    data = json.loads(path.read_text())
+    repos = [p["repo"] for p in data["projects"]] + data.get("report_repos", [])
+    return list(dict.fromkeys(repos))
+
+
+def run_report(gh: GitHub, config: Path) -> int:
+    try:
+        rows = task_summary(load_tasks(gh))
+    except (GitHubError, ValueError) as e:
+        print(f"⚠️ couldn't read tasks.json: {e}", file=sys.stderr)
+        return 1
+    prs = {}
+    for repo in report_repos(config):
+        try:
+            prs.update(open_prs(gh, [repo]))
+        except GitHubError as e:
+            print(f"⚠️ {repo}: {e}", file=sys.stderr)
+    md = report_md(rows, prs)
+    print(md)
+    if os.environ.get("GITHUB_STEP_SUMMARY"):
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
+            f.write(md + "\n")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="agent")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -54,12 +81,17 @@ def main(argv: list[str] | None = None) -> int:
     imp.add_argument("--config", default=str(ROOT / "projects.json"))
     imp.add_argument("--max-open", type=int, default=int(os.environ.get("ADT_MAX_OPEN", 10)),
                      help="Skip a project when this many proposals are already waiting")
+    rp = sub.add_parser("report", help="Daily ADT Work network report (read-only)")
+    rp.add_argument("--config", default=str(ROOT / "projects.json"))
     args = ap.parse_args(argv)
 
     token = os.environ.get("ADT_GITHUB_TOKEN") or os.environ.get("GITHUB_TOKEN")
     if not token:
         print("ADT_GITHUB_TOKEN is not set", file=sys.stderr)
         return 2
+
+    if args.cmd == "report":
+        return run_report(GitHub(token), Path(args.config))
 
     projects = load_projects(Path(args.config))
     if args.project:

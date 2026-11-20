@@ -1,0 +1,24 @@
+name: Network report
+
+on:
+  schedule:
+    - cron: "43 7 * * *"   # every day, 07:43 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Build the ADT Work network report
+        env:
+          ADT_GITHUB_TOKEN: ${{ secrets.ADT_GITHUB_TOKEN }}
+        run: python -m agent report
