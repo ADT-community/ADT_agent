@@ -2,6 +2,7 @@
 
   python -m agent improve              # all projects in projects.json
   python -m agent improve --project trans_sport --dry-run
+  python -m agent payout               # this week's ledger and who to pay
 """
 from __future__ import annotations
 
@@ -9,8 +10,12 @@ import argparse
 import json
 import os
 import sys
+from datetime import date
 from pathlib import Path
 
+import requests
+
+from . import payout
 from .github import GitHub, GitHubError
 from .improve import Project, run_project
 from .llm import LLMError
@@ -45,6 +50,64 @@ def summary_md(results: list[dict], dry_run: bool) -> str:
     return "\n".join(lines)
 
 
+def cmd_payout(args) -> int:
+    """Build the weekly ledger from approved deliveries and print the summary."""
+    sample = ROOT / "sample_data"
+    if str(args.deliveries).startswith(str(sample)):
+        print("⚠️ Using sample deliveries: pass --deliveries with the ADT Work export for real payouts.",
+              file=sys.stderr)
+
+    try:
+        deliveries = payout.parse_deliveries(payout.load_export(args.deliveries))
+        prices = payout.load_prices(args.prices) if args.prices else {}
+    except (OSError, ValueError, requests.RequestException) as e:
+        print(f"Could not read payout inputs: {e}", file=sys.stderr)
+        return 2
+
+    token = os.environ.get("ADT_GITHUB_TOKEN") or os.environ.get("GITHUB_TOKEN")
+    labels = None
+    if args.issues:
+        try:
+            labels = payout.load_issue_labels(args.issues)
+        except (OSError, ValueError) as e:
+            print(f"Could not read the issues snapshot: {e}", file=sys.stderr)
+            return 2
+    elif token and deliveries:
+        gh = GitHub(token)
+        if not prices:
+            text = gh.file(args.tasks_repo, "tasks.json", None)
+            if text:
+                prices = json.loads(text)
+            else:
+                print(f"⚠️ No tasks.json found in {args.tasks_repo}", file=sys.stderr)
+        labels = {}
+        for repo in sorted({d.repo for d in deliveries}):
+            try:
+                issues = gh.issues(repo)
+            except GitHubError as e:
+                print(f"⚠️ Could not read labels for {repo}: {e}", file=sys.stderr)
+                continue
+            for issue in issues:
+                if "pull_request" in issue or issue.get("number") is None:
+                    continue
+                names = [l.get("name", "") if isinstance(l, dict) else l
+                         for l in issue.get("labels", [])]
+                labels[(repo.lower(), int(issue["number"]))] = [n for n in names if n]
+            try:
+                payout.ensure_paid_label(gh, repo)
+            except GitHubError:
+                pass
+
+    ledger = payout.build_ledger(deliveries, prices, issue_labels=labels)
+    week = args.week or (None if args.all_weeks else payout.iso_week(date.today()))
+    text = payout.ledger_summary(ledger, week, detailed=(args.format == "ledger"))
+    print(text)
+    if os.environ.get("GITHUB_STEP_SUMMARY"):
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+            f.write(text + "\n")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="agent")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -54,7 +117,21 @@ def main(argv: list[str] | None = None) -> int:
     imp.add_argument("--config", default=str(ROOT / "projects.json"))
     imp.add_argument("--max-open", type=int, default=int(os.environ.get("ADT_MAX_OPEN", 10)),
                      help="Skip a project when this many proposals are already waiting")
+
+    pay = sub.add_parser("payout", help="Weekly ledger of what is owed, and what is paid")
+    pay.add_argument("--deliveries", default=str(ROOT / "sample_data" / "deliveries.json"),
+                     help="ADT Work claims/deliveries export: JSON, CSV or URL")
+    pay.add_argument("--prices", help="Website tasks.json: local path or URL")
+    pay.add_argument("--issues", help="Optional GitHub issues snapshot (JSON) with labels")
+    pay.add_argument("--tasks-repo", default="ADT-community/ADT-community.github.io",
+                     help="Repo to read tasks.json from when --prices is not given")
+    pay.add_argument("--week", help="ISO week, e.g. 2027-W01 (default: current week)")
+    pay.add_argument("--all-weeks", action="store_true", help="Include every week in the report")
+    pay.add_argument("--format", choices=("summary", "ledger"), default="summary")
     args = ap.parse_args(argv)
+
+    if args.cmd == "payout":
+        return cmd_payout(args)
 
     token = os.environ.get("ADT_GITHUB_TOKEN") or os.environ.get("GITHUB_TOKEN")
     if not token:

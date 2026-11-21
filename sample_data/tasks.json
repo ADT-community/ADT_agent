@@ -1,0 +1,9 @@
+{
+  "source": "Sample of the ADT website tasks.json (prices in USD)",
+  "tasks": [
+    {"id": "ag-7", "repo": "ADT-community/trans_sport", "issue": 7, "bounty_usd": 20},
+    {"id": "ag-8", "repo": "ADT-community/locallity_ai", "issue": 7, "bounty_usd": 20},
+    {"id": "ag-9", "repo": "ADT-community/content_feed", "issue": 9, "price_usd": 75},
+    {"id": "ag-11", "repo": "ADT-community/content_feed", "issue": 11, "price_usd": 30}
+  ]
+}

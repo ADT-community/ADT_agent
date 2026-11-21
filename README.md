@@ -29,6 +29,27 @@ projects.json ──▶ read repo ──▶ Claude: what next? ──▶ drop du
 
 **It won't flood a repo.** At most 3 new proposals per project per run, and none when 10 are already waiting for review (`--max-open`).
 
+## Weekly payout ledger
+
+From the first Wednesday of payouts (6 January 2027) nobody should be missed or paid twice. Every Monday the agent prints a ledger of **who is owed what**, and a maintainer pays on Wednesday. The agent never sends money.
+
+The ledger combines three sources:
+
+1. **ADT Work's claims/deliveries export** (JSON or CSV) — only *approved* deliveries count. A passing mention of an issue is not a delivery, so it creates no debt.
+2. **The website's `tasks.json`** — the price, looked up by `owner/repo#issue`, by task id, or from a task object with `repo`, `issue` and `bounty_usd`/`price_usd`.
+3. **The GitHub issues** — the `paid` label a maintainer adds to an issue marks that ledger line paid, so it is never listed as owed again.
+
+Each line is `week, repo, issue, contributor, amount, status` (`owed` or `paid`). The same person claiming the same issue twice is paid once. Two different people claiming the same issue are flagged for a human instead of being added to the total. Deliveries with no price in `tasks.json` are flagged, never guessed.
+
+```bash
+python -m agent payout --deliveries data/deliveries.json --prices data/tasks.json --week 2027-W01
+python -m agent payout --deliveries https://... --all-weeks --format ledger
+```
+
+Without `--issues`, the command reads issue labels from GitHub (using `ADT_GITHUB_TOKEN`) and makes sure the `paid` label exists. `--issues sample_data/issues.json` runs fully offline. The `sample_data/` directory contains a worked example used by the tests; the default paths are for demonstration, not real payouts.
+
+The scheduled run is **Find payout summary** in [`.github/workflows/payout.yml`](.github/workflows/payout.yml), every Monday 06:17 UTC. Set the `ADT_WORK_EXPORT_URL` secret to the form service's export so the workflow uses live data instead of the sample. Its output is also written to the GitHub Actions step summary.
+
 ## One-time setup
 
 In this repo's **Settings → Secrets and variables → Actions**, add two secrets:
@@ -51,6 +72,7 @@ pip install -r requirements.txt
 export ADT_GITHUB_TOKEN=...  ANTHROPIC_API_KEY=...
 python -m agent improve --dry-run                       # all projects, no issues opened
 python -m agent improve --project "Minibus app"         # one project, opens issues
+python -m agent payout --issues sample_data/issues.json --week 2027-W01  # sample ledger, offline
 python -m unittest discover tests                       # tests (no keys needed)
 ```
 
@@ -65,7 +87,7 @@ Powers ADT first. Once it works, sell it to other open source and remote teams t
 | **G1: Improvement pipeline** ✅ | Finds next improvements per project and opens them as proposals every week |
 | **G2: Daily report** | Daily summary of open bounties, stalled tasks and proposals waiting for review |
 | **G3: Status page** | Live network status on the ADT website (`status.json` in the website repo) |
-| **G4: Payout tracking** | Tracks merged bounties and what's owed to whom |
+| **G4: Payout tracking** ✅ | Weekly ledger of approved deliveries and what's owed to whom; a maintainer marks items paid |
 
 ## Starter tasks (bounty candidates)
 
@@ -74,7 +96,7 @@ Powers ADT first. Once it works, sell it to other open source and remote teams t
 - [ ] Daily report of open bounties across all repos
 - [ ] Write `status.json` to the website repo, and a status page that reads it
 - [ ] When a maintainer approves a proposal, post a "how to claim this bounty" comment
-- [ ] Payout tracking: list merged PRs that closed bounty issues, per contributor
+- [x] Payout tracking: weekly ledger of approved deliveries, prices and paid labels, per contributor
 
 ## Contribute
 

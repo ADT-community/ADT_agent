@@ -1,0 +1,12 @@
+{
+  "source": "Sample GitHub issues snapshot with labels (what gh.issues() returns)",
+  "ADT-community/trans_sport": [
+    {"number": 7, "state": "closed", "title": "Connect the driver app", "labels": [{"name": "bounty:$20"}, {"name": "paid"}]}
+  ],
+  "ADT-community/locallity_ai": [
+    {"number": 7, "state": "closed", "title": "Knowledge base", "labels": [{"name": "bounty:$20"}]}
+  ],
+  "ADT-community/content_feed": [
+    {"number": 9, "state": "closed", "title": "Moderation queue", "labels": [{"name": "bounty:$75"}]}
+  ]
+}

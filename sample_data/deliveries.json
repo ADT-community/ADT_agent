@@ -1,0 +1,53 @@
+{
+  "source": "ADT Work form service export (sample data, not real payouts)",
+  "claims": [
+    {"id": "c-1", "delivery_id": "d-1", "status": "approved", "contributor": "alice"}
+  ],
+  "deliveries": [
+    {
+      "id": "d-1",
+      "claim_id": "c-1",
+      "status": "approved",
+      "repo": "ADT-community/trans_sport",
+      "issue": 7,
+      "issue_url": "https://github.com/ADT-community/trans_sport/issues/7",
+      "delivered_at": "2027-01-06T10:30:00Z",
+      "task_id": "ag-7"
+    },
+    {
+      "id": "d-2",
+      "status": "approved",
+      "repo": "ADT-community/locallity_ai",
+      "issue": 7,
+      "contributor": "@bob",
+      "delivered_at": "2027-01-04",
+      "task_id": "ag-8"
+    },
+    {
+      "id": "d-3",
+      "status": "approved",
+      "repo": "ADT-community/content_feed",
+      "issue": 9,
+      "contributor": "carol",
+      "merged_at": "2027-01-05",
+      "task_id": "ag-9"
+    },
+    {
+      "id": "d-4",
+      "status": "rejected",
+      "repo": "ADT-community/content_feed",
+      "issue": 11,
+      "contributor": "eve",
+      "delivered_at": "2027-01-05"
+    },
+    {
+      "id": "d-5",
+      "status": "approved",
+      "repo": "ADT-community/content_feed",
+      "issue": 10,
+      "contributor": "dave",
+      "delivered_at": "2027-01-05",
+      "task_id": "ag-10"
+    }
+  ]
+}
