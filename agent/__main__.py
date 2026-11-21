@@ -2,6 +2,7 @@
 
   python -m agent improve              # all projects in projects.json
   python -m agent improve --project trans_sport --dry-run
+  python -m agent report               # daily Markdown bounty summary
 """
 from __future__ import annotations
 
@@ -14,6 +15,7 @@ from pathlib import Path
 from .github import GitHub, GitHubError
 from .improve import Project, run_project
 from .llm import LLMError
+from .report import STALLED_DAYS, generate
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -54,6 +56,11 @@ def main(argv: list[str] | None = None) -> int:
     imp.add_argument("--config", default=str(ROOT / "projects.json"))
     imp.add_argument("--max-open", type=int, default=int(os.environ.get("ADT_MAX_OPEN", 10)),
                      help="Skip a project when this many proposals are already waiting")
+    rep = sub.add_parser("report", help="Print a Markdown summary of bounties across all repos")
+    rep.add_argument("--config", default=str(ROOT / "projects.json"))
+    rep.add_argument("--project", help="Only report this project name")
+    rep.add_argument("--stalled-days", type=int, default=STALLED_DAYS,
+                     help=f"Days without activity before a claimed task is stalled (default {STALLED_DAYS})")
     args = ap.parse_args(argv)
 
     token = os.environ.get("ADT_GITHUB_TOKEN") or os.environ.get("GITHUB_TOKEN")
@@ -69,6 +76,15 @@ def main(argv: list[str] | None = None) -> int:
             return 2
 
     gh = GitHub(token)
+
+    if args.cmd == "report":
+        md = generate(gh, projects, stalled_days=args.stalled_days)
+        print(md)
+        if os.environ.get("GITHUB_STEP_SUMMARY"):
+            with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
+                f.write(md + "\n")
+        return 0
+
     results = []
     for p in projects:
         print(f"→ {p.name} ({p.repo})", file=sys.stderr)
