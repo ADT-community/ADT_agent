@@ -29,6 +29,10 @@ projects.json ──▶ read repo ──▶ Claude: what next? ──▶ drop du
 
 **It won't flood a repo.** At most 3 new proposals per project per run, and none when 10 are already waiting for review (`--max-open`).
 
+## Daily report
+
+`python -m agent report` reads the issues of every project in [`projects.json`](projects.json) and prints one Markdown report. It is read-only: no Claude call, no issues or comments opened. For each repo it shows counts and linked issues in five buckets — **open bounties** (a `bounty:$…` label, unassigned), **claimed** (assigned), **in review** (an `in review` label), **stalled** (assigned with no activity for 7 days, configurable with `--stalled-days`) and **proposals waiting** (`agent-proposal`). A repo whose issues cannot be read is listed with an error rather than left out. Posting or scheduling the report is a separate task.
+
 ## One-time setup
 
 In this repo's **Settings → Secrets and variables → Actions**, add two secrets:
@@ -51,6 +55,7 @@ pip install -r requirements.txt
 export ADT_GITHUB_TOKEN=...  ANTHROPIC_API_KEY=...
 python -m agent improve --dry-run                       # all projects, no issues opened
 python -m agent improve --project "Minibus app"         # one project, opens issues
+python -m agent report                                 # daily Markdown bounty summary
 python -m unittest discover tests                       # tests (no keys needed)
 ```
 
