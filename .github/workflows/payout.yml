@@ -1,0 +1,40 @@
+name: Weekly payout summary
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"   # every Monday, 06:17 UTC — payouts happen on Wednesday
+  workflow_dispatch:
+    inputs:
+      week:
+        description: "ISO week (YYYY-Www), blank = current week"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: adt-agent-payout
+  cancel-in-progress: false
+
+jobs:
+  payout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Weekly payout summary
+        env:
+          ADT_GITHUB_TOKEN: ${{ secrets.ADT_GITHUB_TOKEN }}
+          ADT_WORK_EXPORT_URL: ${{ secrets.ADT_WORK_EXPORT_URL }}
+          INPUT_WEEK: ${{ inputs.week }}
+        run: |
+          args=(payout)
+          if [ -n "$ADT_WORK_EXPORT_URL" ]; then args+=(--deliveries "$ADT_WORK_EXPORT_URL"); fi
+          if [ -n "$INPUT_WEEK" ]; then args+=(--week "$INPUT_WEEK"); fi
+          python -m agent "${args[@]}" | tee payout.md
