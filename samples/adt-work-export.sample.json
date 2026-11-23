@@ -1,0 +1,187 @@
+{
+  "_about": "Sample of ADT Work's records: the form service's export of claim and delivery forms. A reviewer adds `approved` and `approved_at` to a delivery when the work passes review. Phone numbers here are made up.",
+  "submissions": [
+    {
+      "type": "claim",
+      "submitted_at": "2026-12-21T09:14:00Z",
+      "task": "ts-13",
+      "task_title": "Figma: design the driver app ($20)",
+      "name": "Amara Okafor",
+      "phone": "+2348012345678",
+      "city": "Lagos",
+      "email": "amara@example.com",
+      "experience": "Three years of product design, mostly Android apps for small businesses.",
+      "portfolio": "https://www.figma.com/@example",
+      "github": "amaraok",
+      "lives_in_africa": "yes",
+      "agrees_rules": "yes"
+    },
+    {
+      "type": "delivery",
+      "submitted_at": "2026-12-29T18:02:00Z",
+      "task": "ts-13",
+      "phone": "+234 801 234 5678",
+      "stage": "final",
+      "work_link": "https://www.figma.com/file/example-driver-app",
+      "notes": "All five screens, plus the offline state. Dark mode is not done.",
+      "approved": "yes",
+      "approved_at": "2026-12-30"
+    },
+    {
+      "type": "delivery",
+      "submitted_at": "2027-01-04T08:30:00Z",
+      "task": "ts-13",
+      "phone": "+2348012345678",
+      "stage": "final",
+      "work_link": "https://www.figma.com/file/example-driver-app",
+      "notes": "Added dark mode after review. Same task, nothing extra owed.",
+      "approved": "yes",
+      "approved_at": "2027-01-05"
+    },
+
+    {
+      "type": "claim",
+      "submitted_at": "2026-11-09T11:40:00Z",
+      "task": "ops-5",
+      "task_title": "Community set-up: Discord and weekly updates ($20)",
+      "name": "Kwame Mensah",
+      "phone": "+233244000111",
+      "city": "Accra",
+      "email": "",
+      "experience": "I run two developer communities in Accra.",
+      "portfolio": "https://example.com/kwame",
+      "github": "kmensah",
+      "lives_in_africa": "yes",
+      "agrees_rules": "yes"
+    },
+    {
+      "type": "delivery",
+      "submitted_at": "2026-11-19T16:05:00Z",
+      "task": "ops-5",
+      "phone": "+233244000111",
+      "stage": "final",
+      "work_link": "https://example.com/adt-community-setup",
+      "notes": "Server live, rules written, first weekly update sent.",
+      "approved": "yes",
+      "approved_at": "2026-11-20"
+    },
+
+    {
+      "type": "claim",
+      "submitted_at": "2026-12-28T07:55:00Z",
+      "task": "la-3",
+      "task_title": "Language research: pick our first language ($20)",
+      "name": "Fatou Diop",
+      "phone": "+221770112233",
+      "city": "Dakar",
+      "email": "fatou@example.com",
+      "experience": "Linguistics graduate, two years of speech data collection.",
+      "portfolio": "https://example.com/fatou",
+      "github": "",
+      "lives_in_africa": "yes",
+      "agrees_rules": "yes"
+    },
+    {
+      "type": "delivery",
+      "submitted_at": "2027-01-05T12:00:00Z",
+      "task": "la-3",
+      "phone": "+221770112233",
+      "stage": "final",
+      "work_link": "https://example.com/first-language-report",
+      "notes": "Recommends Twi, with speaker numbers and data availability.",
+      "approved": "yes",
+      "approved_at": "2027-01-05"
+    },
+
+    {
+      "type": "claim",
+      "submitted_at": "2026-12-14T10:10:00Z",
+      "task": "qt-7",
+      "task_title": "Figma: design the investing app ($20)",
+      "name": "Thandiwe Ncube",
+      "phone": "+263771234567",
+      "city": "Bulawayo",
+      "email": "thandiwe@example.com",
+      "experience": "Fintech product design.",
+      "portfolio": "https://example.com/thandiwe",
+      "github": "thandiwen",
+      "lives_in_africa": "yes",
+      "agrees_rules": "yes"
+    },
+    {
+      "type": "delivery",
+      "submitted_at": "2026-12-28T20:21:00Z",
+      "task": "qt-7",
+      "phone": "+263771234567",
+      "stage": "final",
+      "work_link": "https://www.figma.com/file/example-investing-app",
+      "notes": "Practice mode and the lessons screens.",
+      "approved": "yes",
+      "approved_at": "2026-12-29"
+    },
+
+    {
+      "type": "claim",
+      "submitted_at": "2026-12-30T13:00:00Z",
+      "task": "ts-8",
+      "task_title": "Mobile money fares in a sandbox ($20)",
+      "name": "Brian Kiptoo",
+      "phone": "+254712000333",
+      "city": "Nairobi",
+      "email": "",
+      "experience": "Backend developer, mobile money integrations.",
+      "portfolio": "https://github.com/example",
+      "github": "bkiptoo",
+      "lives_in_africa": "yes",
+      "agrees_rules": "yes"
+    },
+    {
+      "type": "delivery",
+      "submitted_at": "2027-01-04T09:00:00Z",
+      "task": "ts-8",
+      "phone": "+254712000333",
+      "stage": "progress",
+      "work_link": "https://github.com/ADT-community/trans_sport/pull/31",
+      "notes": "Sandbox credentials working, the callback is still to do.",
+      "approved": "yes",
+      "approved_at": "2027-01-04"
+    },
+
+    {
+      "type": "delivery",
+      "submitted_at": "2027-01-04T22:45:00Z",
+      "task": "cf-4",
+      "phone": "+2348099887766",
+      "stage": "final",
+      "work_link": "https://github.com/ADT-community/content_feed/pull/12",
+      "notes": "Accounts, profiles and follows. Waiting for review."
+    },
+
+    {
+      "type": "delivery",
+      "submitted_at": "2027-01-02T15:30:00Z",
+      "task": "la-29",
+      "phone": "+2348055554444",
+      "name": "Chidi Eze",
+      "github": "chidieze",
+      "stage": "final",
+      "work_link": "https://github.com/ADT-community/locallity_ai/pull/44",
+      "notes": "WhatsApp channel. Took it for the experience while it is a next-wave task.",
+      "approved": "yes",
+      "approved_at": "2027-01-03"
+    },
+
+    {
+      "type": "delivery",
+      "submitted_at": "2027-01-02T17:00:00Z",
+      "task": "zz-99",
+      "phone": "+212600112233",
+      "name": "Yasmine Alaoui",
+      "stage": "final",
+      "work_link": "https://example.com/work",
+      "notes": "Task id is not on the website, so there is no price for it.",
+      "approved": "yes",
+      "approved_at": "2027-01-03"
+    }
+  ]
+}
