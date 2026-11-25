@@ -29,6 +29,15 @@ projects.json ──▶ read repo ──▶ Claude: what next? ──▶ drop du
 
 **It won't flood a repo.** At most 3 new proposals per project per run, and none when 10 are already waiting for review (`--max-open`).
 
+## Network status, every day
+
+Every morning the agent takes a snapshot of the whole network (`python -m agent status`, [`.github/workflows/status.yml`](.github/workflows/status.yml)):
+
+- tasks **open, taken and done** per project, read from the website's [`tasks.json`](https://github.com/ADT-community/adt-community.github.io/blob/main/tasks.json);
+- **open issues, open pull requests and last push** for every repo in the network.
+
+It posts the report as a comment on the **Network status** issue in this repo (it opens that issue the first time; a maintainer pins it once by hand), and writes the same data as `status.json` to the website repo, shown at [adt-community.github.io/status.html](https://adt-community.github.io/status.html). It only counts tasks; it never posts prices or pay.
+
 ## One-time setup
 
 In this repo's **Settings → Secrets and variables → Actions**, add two secrets:
@@ -36,7 +45,7 @@ In this repo's **Settings → Secrets and variables → Actions**, add two secre
 | Secret | What it is |
 |---|---|
 | `ANTHROPIC_API_KEY` | An API key from [console.anthropic.com](https://console.anthropic.com) |
-| `ADT_GITHUB_TOKEN` | A **fine-grained personal access token** (GitHub → Settings → Developer settings) with resource owner **ADT-community**, access to the project repos, and permissions **Contents: Read** and **Issues: Read and write** |
+| `ADT_GITHUB_TOKEN` | A **fine-grained personal access token** (GitHub → Settings → Developer settings) with resource owner **ADT-community**, access to the project repos, and permissions **Contents: Read** and **Issues: Read and write**. For the daily network status it also needs **Contents: Read and write** on `adt-community.github.io` |
 
 Optional: add a variable `ADT_MODEL` to choose a different Claude model.
 
@@ -51,6 +60,7 @@ pip install -r requirements.txt
 export ADT_GITHUB_TOKEN=...  ANTHROPIC_API_KEY=...
 python -m agent improve --dry-run                       # all projects, no issues opened
 python -m agent improve --project "Minibus app"         # one project, opens issues
+python -m agent status --dry-run                        # network status, posts and writes nothing
 python -m unittest discover tests                       # tests (no keys needed)
 ```
 
@@ -64,7 +74,7 @@ Powers ADT first. Once it works, sell it to other open source and remote teams t
 |---|---|
 | **G1: Improvement pipeline** ✅ | Finds next improvements per project and opens them as proposals every week |
 | **G2: Daily report** | Daily summary of open bounties, stalled tasks and proposals waiting for review |
-| **G3: Status page** | Live network status on the ADT website (`status.json` in the website repo) |
+| **G3: Status page** ✅ | Live network status on the ADT website (`status.json` in the website repo) |
 | **G4: Payout tracking** | Tracks merged bounties and what's owed to whom |
 
 ## Starter tasks (bounty candidates)
@@ -72,7 +82,7 @@ Powers ADT first. Once it works, sell it to other open source and remote teams t
 - [x] Improvement pipeline with weekly GitHub Actions schedule
 - [ ] Detect stalled tasks (claimed, no activity for 7 days) and comment on them
 - [ ] Daily report of open bounties across all repos
-- [ ] Write `status.json` to the website repo, and a status page that reads it
+- [x] Write `status.json` to the website repo, and a status page that reads it
 - [ ] When a maintainer approves a proposal, post a "how to claim this bounty" comment
 - [ ] Payout tracking: list merged PRs that closed bounty issues, per contributor
 
