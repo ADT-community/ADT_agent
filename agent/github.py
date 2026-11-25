@@ -86,3 +86,41 @@ class GitHub:
     def create_issue(self, full: str, title: str, body: str, labels: list[str]) -> dict:
         return self._req("POST", f"/repos/{full}/issues",
                          json={"title": title, "body": body, "labels": labels}).json()
+
+    def pulls(self, full: str) -> list[dict]:
+        """Open pull requests."""
+        out: list[dict] = []
+        for page in (1, 2, 3):
+            data = self._req("GET", f"/repos/{full}/pulls",
+                             params={"state": "open", "per_page": 100, "page": page}).json()
+            out += data
+            if len(data) < 100:
+                break
+        return out
+
+    def open_issues(self, full: str) -> list[dict]:
+        """Open issues only (not pull requests)."""
+        out: list[dict] = []
+        for page in (1, 2, 3):
+            data = self._req("GET", f"/repos/{full}/issues",
+                             params={"state": "open", "per_page": 100, "page": page}).json()
+            out += [i for i in data if "pull_request" not in i]
+            if len(data) < 100:
+                break
+        return out
+
+    def comment(self, full: str, number: int, body: str) -> dict:
+        return self._req("POST", f"/repos/{full}/issues/{number}/comments", json={"body": body}).json()
+
+    def put_file(self, full: str, path: str, text: str, message: str, branch: str = "main") -> dict:
+        """Create or update one file on a branch. Returns the API response."""
+        payload = {"message": message, "branch": branch,
+                   "content": base64.b64encode(text.encode("utf-8")).decode("ascii")}
+        try:
+            cur = self._req("GET", f"/repos/{full}/contents/{path}", params={"ref": branch}).json()
+            if isinstance(cur, dict) and cur.get("sha"):
+                payload["sha"] = cur["sha"]
+        except GitHubError as e:
+            if "404" not in str(e):
+                raise
+        return self._req("PUT", f"/repos/{full}/contents/{path}", json=payload).json()

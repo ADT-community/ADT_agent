@@ -2,6 +2,7 @@
 
   python -m agent improve              # all projects in projects.json
   python -m agent improve --project trans_sport --dry-run
+  python -m agent status --dry-run     # daily network status, printed only
 """
 from __future__ import annotations
 
@@ -14,6 +15,7 @@ from pathlib import Path
 from .github import GitHub, GitHubError
 from .improve import Project, run_project
 from .llm import LLMError
+from .status import STATUS_REPO, WEBSITE_REPO, run_status
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -45,6 +47,28 @@ def summary_md(results: list[dict], dry_run: bool) -> str:
     return "\n".join(lines)
 
 
+def _step_summary(md: str) -> None:
+    if os.environ.get("GITHUB_STEP_SUMMARY"):
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
+            f.write(md + "\n")
+
+
+def run_status_cmd(gh, projects: list[Project], args) -> int:
+    try:
+        res = run_status(gh, [p.repo for p in projects], dry_run=args.dry_run,
+                         website_repo=args.website_repo, status_repo=args.status_repo)
+    except GitHubError as e:
+        print(f"Network status failed: {e}", file=sys.stderr)
+        return 1
+    print(res.markdown)
+    _step_summary(res.markdown)
+    if args.dry_run:
+        print("\n---\n" + json.dumps(res.status, indent=2, ensure_ascii=False))
+    else:
+        print(f"\nPosted: {res.comment_url}\nWrote: {res.file_url}", file=sys.stderr)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="agent")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -54,6 +78,11 @@ def main(argv: list[str] | None = None) -> int:
     imp.add_argument("--config", default=str(ROOT / "projects.json"))
     imp.add_argument("--max-open", type=int, default=int(os.environ.get("ADT_MAX_OPEN", 10)),
                      help="Skip a project when this many proposals are already waiting")
+    st = sub.add_parser("status", help="Post the daily network status and write status.json")
+    st.add_argument("--dry-run", action="store_true", help="Print the report and JSON, write nothing")
+    st.add_argument("--config", default=str(ROOT / "projects.json"))
+    st.add_argument("--website-repo", default=WEBSITE_REPO)
+    st.add_argument("--status-repo", default=STATUS_REPO, help="Repo with the pinned 'Network status' issue")
     args = ap.parse_args(argv)
 
     token = os.environ.get("ADT_GITHUB_TOKEN") or os.environ.get("GITHUB_TOKEN")
@@ -62,6 +91,8 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     projects = load_projects(Path(args.config))
+    if args.cmd == "status":
+        return run_status_cmd(GitHub(token), projects, args)
     if args.project:
         projects = [p for p in projects if p.name == args.project]
         if not projects:
